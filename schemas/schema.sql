@@ -1,3 +1,5 @@
+/* psql -d loungeo -f schemas/schema.sql */
+
 DROP DATABASE IF EXISTS loungeo;
 CREATE DATABASE loungeo;
 \c loungeo;

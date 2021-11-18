@@ -11,6 +11,8 @@ DROP TABLE IF EXISTS characteristics CASCADE;
 DROP TABLE IF EXISTS photos CASCADE;
 DROP TABLE IF EXISTS reviews CASCADE;
 DROP TABLE IF EXISTS product CASCADE;
+DROP TABLE IF EXISTS temp_characteristics CASCADE;
+DROP TABLE IF EXISTS temp_characteristic_reviews CASCADE;
 
 
 
@@ -95,11 +97,28 @@ CREATE TABLE ratings (
   OIDS=FALSE
 );
 
+CREATE TABLE temp_characteristics (
+	characteristics_id serial PRIMARY KEY,
+	product_id integer NOT NULL,
+	characteristic_name varchar(32) NOT NULL
+) WITH (
+  OIDS=FALSE
+);
+
+CREATE TABLE temp_characteristic_reviews (
+	id serial PRIMARY KEY,
+	characteristic_id integer,
+	review_id integer NOT NULL,
+	value smallint NOT NULL
+) WITH (
+  OIDS=FALSE
+);
 
 
-ALTER TABLE photos ADD FOREIGN KEY (review_id) REFERENCES reviews(review_id);
+/* ALTER TABLE photos ADD FOREIGN KEY (review_id) REFERENCES reviews(review_id);
 ALTER TABLE reviews ADD FOREIGN KEY (product_id) REFERENCES product(product_id);
 ALTER TABLE characteristics ADD FOREIGN KEY (product_id) REFERENCES product(product_id);
 ALTER TABLE characteristics ADD FOREIGN KEY (characteristic_vote_id) REFERENCES characteristic_votes(characteristic_vote_id);
 ALTER TABLE product ADD FOREIGN KEY (recommended_id) REFERENCES recommended(recommended_id);
 ALTER TABLE product ADD FOREIGN KEY (ratings_id) REFERENCES ratings(ratings_id);
+ */

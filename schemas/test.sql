@@ -1,18 +1,15 @@
-/* psql -d loungeo -f schemas/test.sql */
+-- psql -d loungeo -f schemas/test.sql
 
 \echo PHOTOS;
-SELECT * FROM photos LIMIT 5;
+SELECT * FROM photos ORDER BY photos_id ASC LIMIT 20;
 \echo REVIEWS;
-SELECT * FROM reviews LIMIT 5;
+SELECT * FROM reviews ORDER BY review_id ASC LIMIT 20;
 \echo META;
-SELECT * FROM meta LIMIT 5;
+SELECT * FROM meta ORDER BY product_id ASC LIMIT 20;
 \echo CHARACTERISTICS;
-SELECT * FROM characteristics LIMIT 5;
+SELECT * FROM characteristics ORDER BY characteristics_id ASC LIMIT 20;
 \echo CHARACTERISTICS_PRODUCTS_JOIN;
-SELECT * FROM characteristics_products_join LIMIT 5;
-\echo CHARACTERISTIC_VOTES;
-SELECT * FROM characteristic_votes LIMIT 5;
-\echo TEMP_CHARACTERISTICS;
-SELECT * FROM temp_characteristics LIMIT 5;
+SELECT * FROM characteristic_votes ORDER BY characteristic_vote_id ASC LIMIT 20;
+\echo CHAR_NAME_VOTE_JOIN;
+SELECT * FROM char_name_vote_join ORDER BY char_join_id ASC LIMIT 20;
 \echo TEMP_CHARACTERISTIC_REVIEWS;
-SELECT * FROM temp_characteristic_reviews LIMIT 5;

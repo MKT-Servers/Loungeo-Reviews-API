@@ -47,10 +47,17 @@ CREATE TABLE characteristic_votes (
   OIDS=FALSE
 );
 
+/* ---------- CHARACTERISTIC TABLE CONSTRUCTION ---------- */
 
 INSERT INTO characteristics(characteristic_name) SELECT DISTINCT characteristic_name FROM temp_characteristics;
 
+
+/* ---------- META TABLE CONSTRUCTION ---------- */
+
 INSERT INTO meta(product_id) SELECT DISTINCT product_id FROM reviews;
+
+/* count of each rating per product */
+
 
 UPDATE meta SET rating_1=count
 FROM (SELECT product_id, COUNT(rating)
@@ -86,6 +93,8 @@ FROM reviews
 WHERE rating=5
 GROUP BY product_id) AS c
 WHERE meta.product_id=c.product_id;
+
+/* count of recommended votes per product */
 
 UPDATE meta SET recommended_true_vote=count
 FROM (SELECT product_id, COUNT(recommend)

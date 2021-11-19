@@ -1,0 +1,20 @@
+{
+  "name": "api-reviews-loungeo",
+  "version": "1.0.0",
+  "description": "Database services for the Loungeo website",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-data": "psql -d loungeo -f schemas/schema.sql && psql -d loungeo -f schemas/data_uploader.sql && psql -d loungeo -f schemas/data_modifier.sql"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MKT-Servers/Loungeo-Reviews-API.git"
+  },
+  "author": "Quinton Maki",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MKT-Servers/Loungeo-Reviews-API/issues"
+  },
+  "homepage": "https://github.com/MKT-Servers/Loungeo-Reviews-API#readme"
+}

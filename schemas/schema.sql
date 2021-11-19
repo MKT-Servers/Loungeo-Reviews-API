@@ -1,4 +1,4 @@
-/* psql -d loungeo -f schemas/schema.sql */
+-- psql -d loungeo -f schemas/schema.sql
 
 DROP DATABASE IF EXISTS loungeo;
 CREATE DATABASE loungeo;
@@ -6,7 +6,7 @@ CREATE DATABASE loungeo;
 
 DROP TABLE IF EXISTS photos CASCADE;
 DROP TABLE IF EXISTS reviews CASCADE;
-DROP TABLE IF EXISTS temp_characteristics CASCADE;
+DROP TABLE IF EXISTS char_name_vote_join CASCADE;
 DROP TABLE IF EXISTS temp_characteristic_reviews CASCADE;
 
 
@@ -39,8 +39,8 @@ CREATE TABLE reviews (
 );
 
 
-CREATE TABLE temp_characteristics (
-	characteristics_id serial PRIMARY KEY,
+CREATE TABLE char_name_vote_join (
+	char_join_id serial PRIMARY KEY,
 	product_id integer NOT NULL,
 	characteristic_name varchar(32) NOT NULL
 ) WITH (
@@ -48,7 +48,7 @@ CREATE TABLE temp_characteristics (
 );
 
 CREATE TABLE temp_characteristic_reviews (
-	id serial PRIMARY KEY,
+	join_id serial PRIMARY KEY,
 	characteristic_id integer,
 	review_id integer NOT NULL,
 	value smallint NOT NULL

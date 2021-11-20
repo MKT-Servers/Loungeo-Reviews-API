@@ -1,5 +1,3 @@
--- psql -d loungeo -f schemas/data_modifier.sql
-
 DROP TABLE IF EXISTS characteristic_votes CASCADE;
 DROP TABLE IF EXISTS characteristics CASCADE;
 DROP TABLE IF EXISTS meta CASCADE;

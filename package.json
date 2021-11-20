@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",
+    "test": "jest --forceExit",
     "build-data": "psql -d loungeo -f schemas/schema.sql && psql -d loungeo -f schemas/data_uploader.sql && psql -d loungeo -f schemas/data_modifier.sql"
   },
   "repository": {
@@ -22,10 +23,13 @@
     "eslint-config-airbnb": "^19.0.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-jest": "^25.2.4",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "jest": "^27.3.1",
     "nodemon": "^2.0.15",
-    "prettier": "^2.4.1"
+    "prettier": "^2.4.1",
+    "supertest": "^6.1.6"
   },
   "dependencies": {
     "express": "^4.17.1",

@@ -1,9 +1,10 @@
+-- Table visualizer file
 -- psql -d loungeo -f schemas/test.sql
 
 \echo PHOTOS;
 SELECT * FROM photos ORDER BY photos_id ASC LIMIT 20;
 \echo REVIEWS;
-SELECT * FROM reviews ORDER BY review_id ASC LIMIT 20;
+SELECT * FROM reviews ORDER BY date DESC LIMIT 20;
 \echo META;
 SELECT * FROM meta ORDER BY product_id ASC LIMIT 20;
 \echo CHARACTERISTICS;

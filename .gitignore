@@ -105,3 +105,6 @@ dist
 
 # Raw csv files
 data/
+
+# Config files
+db/config.js

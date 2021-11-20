@@ -4,7 +4,7 @@
   "description": "Database services for the Loungeo website",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js",
     "build-data": "psql -d loungeo -f schemas/schema.sql && psql -d loungeo -f schemas/data_uploader.sql && psql -d loungeo -f schemas/data_modifier.sql"
   },
   "repository": {
@@ -16,5 +16,19 @@
   "bugs": {
     "url": "https://github.com/MKT-Servers/Loungeo-Reviews-API/issues"
   },
-  "homepage": "https://github.com/MKT-Servers/Loungeo-Reviews-API#readme"
+  "homepage": "https://github.com/MKT-Servers/Loungeo-Reviews-API#readme",
+  "devDependencies": {
+    "eslint": "^8.2.0",
+    "eslint-config-airbnb": "^19.0.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "nodemon": "^2.0.15",
+    "prettier": "^2.4.1"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "pg": "^8.7.1"
+  }
 }

@@ -5,7 +5,6 @@ const db = require('./db');
 const app = express();
 const port = 3000;
 
-// params and query
 app.get('/reviews', (req, res) => {
   const {
     page = 1,
@@ -51,25 +50,79 @@ app.get('/reviews', (req, res) => {
     });
 });
 
+// Meta info
+
 app.get('/reviews/meta', (req, res) => {
-  // TODO
+  const { product_id } = req.query;
+
+  db.query(`
+    SELECT * FROM meta
+    WHERE meta.product_id = $1`, [product_id])
+    .then(({ rows }) => {
+      const response = {
+        product_id,
+        ratings: {
+          1: rows[0].rating_1,
+          2: rows[0].rating_2,
+          3: rows[0].rating_3,
+          4: rows[0].rating_4,
+          5: rows[0].rating_5,
+        },
+        recommended: {
+          true: rows[0].recommended_true_vote,
+          false: rows[0].recommended_false_vote,
+        },
+        characteristics: {},
+      };
+      res.status(200).send(response);
+    }).catch((err) => {
+      res.status(500).send(err);
+    });
 });
+
+// Reviews
 
 app.post('/reviews', (req, res) => {
   // TODO
+  const {
+    product_id, rating, summary, body, recommend, name, email, photos, characteristics,
+  } = req.body;
 
+  db.query(`
+    INSERT INTO reviews(product_id, rating, date, summary, body, recommend, reviewer_name, reviewer_email)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`, [product_id, rating, Date.now(), summary, body, recommend, name, email])
+    .then((result) => {
+      res.status(201).send(result);
+    }).catch(() => {
+      res.status(400).send('Invalid data type');
+    });
+  db.query(`
+    INSERT INTO photos(url, review_id)
+    VALUES ()`)
+    .then()
+    .catch();
 });
+
+// Helpful
 
 app.put('/reviews/:review_id/helpful', (req, res) => {
-  // TODO
-
+  const { review_id } = req.params;
+  db.query(`
+    UPDATE reviews SET helpfulness = (helpfulness + 1) WHERE review_id = $1`, [review_id])
+    .then((result) => {
+      res.status(204).send(result);
+    }).catch((err) => res.status(400).send(err));
 });
+
+// Report
 
 app.put('/reviews/:review_id/report', (req, res) => {
-  // TODO
-
+  const { review_id } = req.params;
+  db.query(`
+    UPDATE reviews SET reported = true WHERE review_id = $1`, [review_id])
+    .then((result) => {
+      res.status(204).send(result);
+    }).catch((err) => res.status(400).send(err));
 });
 
-app.listen(port, () => {
-  console.log(`Listening at port ${port}...`);
-});
+app.listen(port);

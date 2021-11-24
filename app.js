@@ -3,6 +3,7 @@ const express = require('express');
 const db = require('./db');
 
 const app = express();
+app.use(express.json());
 
 app.get('/reviews', (req, res) => {
   const {
@@ -22,20 +23,17 @@ app.get('/reviews', (req, res) => {
 
   switch (sort) {
     case 'newest':
-      sortAlgo = 'date';
+      sortAlgo = 'date DESC';
       break;
     case 'helpful':
-      sortAlgo = 'helpfulness';
+      sortAlgo = 'helpfulness DESC';
       break;
     default:
-      // revisit relevant algorithm
-      sortAlgo = 'helpfulness';
+      sortAlgo = 'helpfulness DESC, date DESC';
       break;
   }
 
-  // NEEDS WORK
-
-  db.query('SELECT * FROM reviews WHERE product_id = $1 ORDER BY $2 DESC LIMIT $3', [product_id, sortAlgo, count * page])
+  db.query(`SELECT * FROM reviews WHERE (product_id = $1) ORDER BY ${sortAlgo} LIMIT $2`, [product_id, count])
     .then((result) => {
       res.status(200).send({
         product: product_id,
@@ -82,24 +80,37 @@ app.get('/reviews/meta', (req, res) => {
 // Reviews
 
 app.post('/reviews', (req, res) => {
-  // TODO - deal with photos and characteristics
+  // TODO - deal with characteristics
   const {
-    product_id, rating, summary, body, recommend, name, email,
+    product_id, rating, summary, body, recommend, name, email, photos,
   } = req.body;
 
   db.query(`
     INSERT INTO reviews(product_id, rating, date, summary, body, recommend, reviewer_name, reviewer_email)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`, [product_id, rating, Date.now(), summary, body, recommend, name, email])
-    .then((result) => {
-      res.status(201).send(result);
-    }).catch(() => {
-      res.status(400).send('Invalid data type');
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+    RETURNING review_id
+    `, [product_id, rating, Date.now(), summary, body, recommend, name, email])
+    .then(({ rows }) => {
+      const { review_id } = rows[0];
+      if (photos.length > 0) {
+        let valueQuery = '';
+        for (let i = 0; i < photos.length; i += 1) {
+          valueQuery += `($${i + 2}, $1), `;
+        }
+        valueQuery = valueQuery.slice(0, -2);
+
+        db.query(`INSERT INTO photos(url, review_id) VALUES ${valueQuery}`, [review_id, ...photos])
+          .then(() => {
+            res.status(201).send(rows[0]);
+          }).catch((err) => {
+            res.status(400).send(err.message);
+          });
+      } else {
+        res.status(201).send(rows[0]);
+      }
+    }).catch((err) => {
+      res.status(400).send(err.message);
     });
-  db.query(`
-    INSERT INTO photos(url, review_id)
-    VALUES ()`)
-    .then()
-    .catch();
 });
 
 // Helpful

@@ -109,14 +109,8 @@ SELECT SETVAL((SELECT PG_GET_SERIAL_SEQUENCE('"photos"', 'photos_id')), (SELECT 
 
 -- Set up indexes
 
-CREATE INDEX reviews_review_id ON reviews (review_id);
 CREATE INDEX reviews_product_id ON reviews (product_id);
-CREATE INDEX reviews_sort_by_helpful ON reviews (helpfulness DESC NULLS LAST);
-CREATE INDEX reviews_sort_by_newness ON reviews (date DESC NULLS LAST);
 
 CREATE INDEX photos_review_id ON photos (review_id);
 
-CREATE INDEX meta_product_id ON meta (product_id);
-
 CREATE INDEX char_name_vote_join_product_id ON char_name_vote_join (product_id);
-CREATE INDEX char_name_vote_join_join_id ON char_name_vote_join (char_join_id);

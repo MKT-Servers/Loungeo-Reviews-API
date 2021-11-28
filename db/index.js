@@ -5,7 +5,12 @@ const pool = new Pool(config);
 
 module.exports = {
   async query(text, params) {
+    const start = Date.now();
     const res = await pool.query(text, params);
+    const duration = Date.now() - start;
+    if (duration > 50) {
+      console.log('executed query', { text, duration, rows: res.rowCount });
+    }
     return res;
   },
   async getClient() {

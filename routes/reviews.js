@@ -33,34 +33,43 @@ router.get('/', (req, res) => {
       break;
   }
 
-  db.query(`SELECT * FROM reviews WHERE (product_id = $1) AND (reported=false) ORDER BY ${sortAlgo} LIMIT $2`, [product_id, count])
-    .then(async (result) => {
-      let photosQueries = [];
-      result.rows.forEach((review) => {
-        if (review.response === 'null') review.response = null;
-        if (typeof parseInt(review.date, 10) === 'number') {
-          const date = new Date(parseInt(review.date, 10));
-          review.date = date.toISOString();
+  db.query(`
+  SELECT * FROM photos
+  RIGHT OUTER JOIN (SELECT * FROM reviews
+  WHERE (product_id = $1)
+  AND (reported = false)
+  ORDER BY ${sortAlgo}
+  LIMIT $2) AS review
+  ON photos.review_id = review.review_id
+  `, [parseInt(product_id, 10), parseInt(count, 10)])
+    .then((result) => {
+      const order = [];
+      const results = {};
+      result.rows.forEach((row) => {
+        const date = new Date(parseInt(row.date, 10));
+        if (!results[row.review_id]) {
+          results[row.review_id] = {
+            review_id: row.review_id,
+            rating: row.rating,
+            summary: row.summary,
+            recommend: row.recommend,
+            response: row.response,
+            body: row.body,
+            date: date.toISOString(),
+            reviewer_name: row.reviewer_name,
+            helpfulness: row.helpfulness,
+            photos: row.photos_id ? [{ id: row.photos_id, url: row.url }] : [],
+          };
+          order.push(row.review_id);
         } else {
-          console.err('ERROR DATE FORMAT');
-          console.log(review);
+          results[row.review_id].photos.push({ id: row.photos_id, url: row.url });
         }
-        photosQueries.push(db.query('SELECT * FROM photos WHERE review_id = $1', [review.review_id]).then((photoQ) => {
-          const output = [];
-          photoQ.rows.forEach((row) => output.push({ id: row.photos_id, url: row.url }));
-          return output;
-        }));
-        delete review.product_id;
-      });
-      photosQueries = await Promise.all(photosQueries);
-      result.rows.forEach((review, index) => {
-        review.photos = photosQueries[index];
       });
       res.status(200).send({
         product: product_id,
         page,
         count,
-        results: result.rows,
+        results: order.map((key) => results[key]),
       });
     })
     .catch((err) => {
@@ -69,7 +78,6 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-  // TODO - deal with characteristics
   const {
     product_id, rating, summary, body, recommend, name, email, photos, characteristics,
   } = req.body;
